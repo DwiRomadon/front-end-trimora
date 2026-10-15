@@ -213,3 +213,64 @@
 .attendance-feature{display:grid;gap:20px}.attendance-intro{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px;border:1px solid var(--border,#dbe7e1);border-radius:18px;background:#edf5f0}.attendance-intro h2{margin:0 0 8px}.attendance-intro p{margin:0;max-width:680px;color:#526b61}.attendance-tabs{flex-wrap:wrap}.attendance-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}.attendance-fields label{display:grid;gap:8px;min-width:0}.attendance-fields input,.attendance-fields select{width:100%;min-width:0}.attendance-schedules{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}.attendance-schedules small{display:block;margin-top:10px;color:#63776d}.attendance-qr{text-align:center}.attendance-qr img{max-width:100%;height:auto;image-rendering:pixelated}.attendance-qr-placeholder{display:grid;place-items:center;min-height:320px;background:#f2f6f4;border-radius:12px}.attendance-camera{width:100%;max-height:420px;object-fit:cover;border-radius:12px;background:#101c16}.attendance-feature>.panel{min-width:0}.attendance-feature .panel>.actions{margin-bottom:16px}@media(max-width:640px){.attendance-intro{align-items:stretch;flex-direction:column;padding:18px}.attendance-fields{grid-template-columns:1fr}.attendance-tabs{display:flex;flex-wrap:nowrap;overflow:auto;padding-bottom:6px}.attendance-tabs button{white-space:nowrap}.attendance-schedules{grid-template-columns:1fr}}
 
 .attendance-show-all{display:flex;align-items:center;gap:10px}.attendance-show-all input{width:auto}
+
+/* Original Trimora artwork, framed without changing the supplied asset. */
+.trimora-logo{display:inline-block;position:relative;overflow:visible;width:138px;aspect-ratio:1.22;background:transparent;border-radius:0;vertical-align:middle;flex-shrink:0}
+.trimora-logo img{position:absolute;width:130%;height:auto;max-width:none;left:-15%;top:-30%}
+.wordmark:has(.trimora-logo){display:inline-flex;width:fit-content;line-height:0;padding:0}
+.auth-story .wordmark .trimora-logo,.platform-login-story .wordmark .trimora-logo{width:160px}
+.trimora-loading{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:32px;background:#f7f9fc;color:#536273;text-align:center}
+.trimora-loading .trimora-logo{width:220px;border-radius:0;box-shadow:none}
+.trimora-loading p{font-size:14px;margin:0;line-height:1.6}
+.trimora-loading-track{width:150px;height:4px;overflow:hidden;border-radius:99px;background:#dce5ee}
+.trimora-loading-track span{display:block;width:45%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#0075ff,#ef1830);animation:trimora-progress 1.4s ease-in-out infinite}
+.trimora-loading-compact{min-height:320px;border-radius:18px}
+@keyframes trimora-progress{0%{transform:translateX(-110%)}100%{transform:translateX(330%)}}
+@media(prefers-reduced-motion:reduce){.trimora-loading-track span{animation:none;width:100%}}
+@media(max-width:640px){.wordmark .trimora-logo,.auth-story .wordmark .trimora-logo,.platform-login-story .wordmark .trimora-logo{width:100px}.trimora-loading .trimora-logo{width:190px}}
+
+/* Trimora brand palette: navy foundation, blue actions, restrained red accent. */
+:root{--background:#f4f7fc;--foreground:#142438;--accent:#075bd8;--line:#dce4ef;--muted:#5c6d82;--brand-navy:#102237;--brand-blue:#075bd8;--brand-red:#e5243b;--brand-soft:#edf4ff}
+button:focus-visible,a:focus-visible{outline-color:#438cff}
+input,select,textarea{border-color:#cbd6e4;color:var(--foreground)}
+input:focus,select:focus,textarea:focus{border-color:var(--brand-blue);box-shadow:0 0 0 3px #075bd81a}
+.primary{background:var(--brand-blue);border-color:var(--brand-blue);color:#fff}.primary:hover:not(:disabled){background:#0348af;border-color:#0348af}
+.secondary{color:#34465e;border-color:#d2ddec}.secondary:hover:not(:disabled){background:#edf4ff}
+.avatar,.pill,.tile-icon,.metric-icon{background:var(--brand-soft);color:#0753bd;border-color:#d4e3fa}
+.nav{color:#53647b}.nav.active{background:#e8f1ff;color:#074fba}.nav:hover{background:#f0f5fe}.nav small{background:#d5e6ff;color:#0753bd}
+.metric.featured{background:var(--brand-navy);border-color:var(--brand-navy)}.metric.featured>div,.metric.featured small{color:#bfd2ed}
+.bar{background:#4589ed}.bar-track:hover .bar{background:#075bd8}.insight,.tip{background:#edf3fc}.insight-line{border-color:#d4dfef}.insight small{color:#536883}
+th{background:#f5f7fc}td{border-bottom-color:#e5eaf3}.business-card{background:#f8faff}.skeleton{background:linear-gradient(90deg,#e6edf6,#f6f8fc,#e6edf6);background-size:200% 100%}
+.auth,.platform-login{background:#fff}.auth-story,.platform-login-story{position:relative;background:radial-gradient(ellipse at 5% 0%,#dceaff 0%,transparent 55%),linear-gradient(145deg,#f5f9ff 25%,#eaf1fc 100%);color:var(--brand-navy);border-right:1px solid #dbe5f4;gap:28px}
+.auth-story::before,.platform-login-story::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,#102237 0 60%,#075bd8 60% 90%,#e5243b 90%)}
+.auth-story .eyebrow,.platform-login-story .eyebrow{color:#0753bd;font-weight:700}
+.auth-story h1,.platform-login-story h1{color:#102237;font-size:clamp(36px,3.7vw,58px);line-height:1.12;letter-spacing:-1.8px}
+.auth-story h1 em,.platform-login-story h1 em{color:#075bd8;font-family:inherit;font-style:normal;font-weight:650}
+.auth-story>div>p:not(.eyebrow),.platform-login-story p:not(.eyebrow){color:#455d7a;max-width:440px;font-size:14px;line-height:1.85}
+.auth-story>small,.platform-login-story small{color:#536a85}
+.auth-story .story-art{background:#ffffffb8;border:1px solid #cfddf0;border-left:4px solid #e5243b;box-shadow:0 12px 36px #10223708;transform:none;max-width:420px;gap:20px;padding:24px;border-radius:16px}
+.auth-story .story-art>span{color:#075bd8;font-size:48px}.auth-story .story-art>div{color:#102237;font-size:16px;letter-spacing:.7px;font-weight:650}.auth-story .story-art small{color:#536a85;font-size:10px;letter-spacing:.5px;font-weight:400}
+.auth-form,.platform-login-form{background:#fff}.auth-box h2,.platform-login-form h2{color:#102237}.auth-note{color:#62748b}.auth-box .primary,.platform-login-form .primary{box-shadow:0 6px 18px #075bd81a}
+.platform-sidebar{background:#edf3fc;color:#142438;border-right:1px solid #dce4ef}.platform-label{color:#526b8b}.platform-nav-active{background:#dceaff;color:#074fba}.platform-sidebar-note,.platform-admin-user small{color:#526b8b}.platform-admin-user{border-top-color:#d0dcee}
+.subscription-hero{background:linear-gradient(120deg,#102237,#163b6b)}.subscription-kicker,.subscription-hero p{color:#c4d6ee}.subscription-hero h1 em,.subscription-hero-note>span{color:#93c1ff}.subscription-hero-note{border-left-color:#42638b}
+.subscription-page .subscription-plan.promo{background:#eff5ff;border-color:#075bd8;box-shadow:0 6px 20px #075bd80d}.subscription-plan ul{color:#455d7a;border-color:#dce4ef}.subscription-plan li:before{color:#075bd8}.plan-promo{background:#dceaff;color:#074fba}
+.subscription-plan .primary{background:#fff;color:#0753bd;border-color:#c2d5f0}.subscription-plan.promo .primary{background:#075bd8;color:#fff;border-color:#075bd8}.subscription-plan .primary:hover{background:#e8f1ff}.subscription-plan.promo .primary:hover{background:#0348af}
+.attendance-intro{background:#edf4ff;border-color:#d4e1f4}.attendance-intro p{color:#455d7a}.trimora-loading{background:#f4f7fc}
+@media(max-width:800px){.auth-story,.platform-login-story{border-right:0;border-bottom:1px solid #dbe5f4}.auth-story{padding:22px 24px}.auth-story .wordmark .trimora-logo{width:108px}}
+.step-badge,.document-steps li.reached>span,.workspace .commission-tabs>button.primary{background:#e8f1ff;color:#0753bd}
+.filter-block,.pos-selection-tools input[type=search],.pos-customer-area,.admin-dialog .document-confirm .refund-check{background:#f5f8fd}
+.workspace .pos-grid .order{border-color:#d2deed}.pos-payment-form .total{background:#edf4ff}.recipe-info:not(.warning){background:#eff5ff;border-color:#d4e3f9;color:#385b88}
+.admin-dialog::backdrop{background:#0c1c32a6}.admin-dialog-progress{background:#edf4ff}.platform-order{border-top-color:#075bd8}
+
+/* Compact sidebar branding leaves more vertical space for navigation. */
+.sidebar>.wordmark .trimora-logo,.platform-sidebar>.wordmark .trimora-logo{width:68px}
+.sidebar>.wordmark,.platform-sidebar>.wordmark{flex-shrink:0;align-self:center;margin-inline:auto}
+.sidebar>.business-card{margin-top:16px;margin-bottom:20px}
+.platform-sidebar>.platform-label{margin-top:22px}
+@media(max-width:800px){.sidebar>.wordmark .trimora-logo{width:60px}}
+
+.business-branding{max-width:960px}.business-branding>header{margin-bottom:24px}.business-branding>header .muted{margin-top:10px}.business-branding-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}.business-logo-preview{min-height:190px;display:grid;place-items:center;border:1px dashed #cbd6e4;border-radius:12px;margin:12px 0;background:#f5f8fd;color:var(--muted)}.business-logo-preview img{max-width:180px;max-height:160px;width:auto;height:auto;object-fit:contain}.business-branding input[type=file]{margin-bottom:12px}.business-branding .actions{margin-top:18px}.business-branding .muted{font-size:12px}.business-receipt-preview{padding:24px;background:#fafafa;border:1px solid var(--line);border-radius:12px}.business-receipt-preview .thermal-brand{padding:20px 0;border-bottom:1px dashed #c5cbd4;margin-bottom:18px;font-family:monospace;text-align:center}.business-branding-actions{border-top:1px solid var(--line);padding-top:20px;justify-content:flex-end}.thermal-brand .thermal-business-logo{display:block;width:auto;height:auto;max-width:min(36mm,100%);max-height:25mm;object-fit:contain;margin:0 auto 3mm;border-radius:0}
+@media(max-width:640px){.business-branding-grid{grid-template-columns:1fr;gap:20px}.business-branding-actions{flex-wrap:wrap}}
+@media print{.thermal-brand .thermal-business-logo{filter:grayscale(1);break-inside:avoid;print-color-adjust:exact}}
+
+.business-card .business-avatar{width:40px;height:40px;flex:0 0 40px;border-radius:8px;overflow:visible}.business-avatar:has(img){background:transparent}.business-avatar img{display:block;width:100%;height:100%;object-fit:contain;border-radius:0}.business-card>div{min-width:0}

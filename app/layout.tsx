@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Studio Kasir | Barbershop Workspace",
+  title: "Trimora | Barbershop Workspace",
   description: "Kelola outlet, layanan, dan transaksi barbershop dalam satu tempat.",
 };
 

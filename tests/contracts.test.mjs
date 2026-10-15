@@ -33,10 +33,10 @@ test('receipt item subtotal stays before discount even when allocated total is l
 test('receipt time uses WIB and renders correct payment labels',()=>{const date=receiptTools.receiptDate('2026-10-11T14:47:00.000Z');assert.equal(date.time,'21:47');assert.match(date.date,/11/);assert.equal(receiptTools.paymentName('CASH'),'Tunai');assert.equal(receiptTools.paymentName('EWALLET'),'E-Wallet');});
 test('real backend receipt mapping keeps customer, item subtotal and payment change',async()=>{
   const Decimal=backendRequire('@prisma/client/runtime/client').Decimal;const d=value=>new Decimal(value);let query;
-  const transaction={business:{name:'Test Studio'},outlet:{name:'Test Outlet',address:'Test Address',phone:'08000000000'},invoiceNumber:'INV-TEST',status:'COMPLETED',completedAt:new Date('2026-10-11T14:47:00Z'),cashier:{name:'Cashier Test'},customer:{name:'Customer Test',phone:'08123456789'},notes:'Thank you',subtotal:d(75000),discountAmount:d(10000),grandTotal:d(65000),items:[{itemName:'Haircut',type:'SERVICE',barber:{name:'Barber'},quantity:d(1),unitPrice:d(75000),subtotal:d(75000),discountAmount:d(10000),total:d(65000)}],payments:[{method:'CASH',amount:d(65000),tenderedAmount:d(100000),changeAmount:d(35000)}]};
+  const transaction={business:{name:'Test Studio',logoUrl:'data:image/png;base64,receipt-logo'},outlet:{name:'Test Outlet',address:'Test Address',phone:'08000000000'},invoiceNumber:'INV-TEST',status:'COMPLETED',completedAt:new Date('2026-10-11T14:47:00Z'),cashier:{name:'Cashier Test'},customer:{name:'Customer Test',phone:'08123456789'},notes:'Thank you',subtotal:d(75000),discountAmount:d(10000),grandTotal:d(65000),items:[{itemName:'Haircut',type:'SERVICE',barber:{name:'Barber'},quantity:d(1),unitPrice:d(75000),subtotal:d(75000),discountAmount:d(10000),total:d(65000)}],payments:[{method:'CASH',amount:d(65000),tenderedAmount:d(100000),changeAmount:d(35000)}]};
   const service=moduleFile('../Back-end/apps/src/modules/pos/pos-query.service.ts',path=>path==='../../config/database'?{prisma:{posTransaction:{findFirst:async q=>{query=q;return transaction;}}}}:{Prisma:{Decimal}}).PosQueryService;
   const result=await service.receipt({role:'OWNER',businessId:id,userId:barber},id);
-  assert.equal(query.select.customer.select.phone,true);assert.equal(result.customer.name,'Customer Test');assert.equal(result.items[0].barber,'Barber');assert.equal(result.items[0].subtotal,'75000');assert.equal(result.items[0].total,'65000');assert.equal(result.totalTendered,'100000');assert.equal(result.totalChange,'35000');assert.equal(result.notes,'Thank you');
+  assert.equal(query.select.business.select.logoUrl,true);assert.equal(result.businessLogoUrl,transaction.business.logoUrl);assert.equal(query.select.customer.select.phone,true);assert.equal(result.customer.name,'Customer Test');assert.equal(result.items[0].barber,'Barber');assert.equal(result.items[0].subtotal,'75000');assert.equal(result.items[0].total,'65000');assert.equal(result.totalTendered,'100000');assert.equal(result.totalChange,'35000');assert.equal(result.notes,'Thank you');
 });
 test('fractional product quantity retains all three decimals on receipt',()=>{assert.equal(receiptTools.receiptQuantity('0.125'),'0,125');assert.equal(receiptTools.receiptQuantity('1.001'),'1,001');});
 const locationTools=moduleFile('lib/stock-locations.ts');
@@ -195,4 +195,34 @@ test('locally generated attendance QR decodes to the exact API token',async()=>{
  for(let y=0;y<qr.modules.size;y++)for(let x=0;x<qr.modules.size;x++)if(qr.modules.get(y,x))for(let dy=0;dy<scale;dy++)for(let dx=0;dx<scale;dx++)luminance[((y+margin)*scale+dy)*width+(x+margin)*scale+dx]=0;
  const bitmap=new BinaryBitmap(new HybridBinarizer(new RGBLuminanceSource(luminance,width,width)));
  assert.equal(new QRCodeReader().decode(bitmap).getText(),token);
+});
+
+const logoValidation=moduleFile('../Back-end/apps/src/modules/business/business.validation.ts',backendRequire,{Buffer});
+const tinyLogo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a2ioAAAAASUVORK5CYII=';
+test('business logo accepts bounded PNG or removal and rejects URLs, SVG, oversized dimensions and foreign business IDs',()=>{
+ assert.equal(logoValidation.businessLogoSchema.safeParse({logoUrl:tinyLogo}).success,true);
+ assert.equal(logoValidation.businessLogoSchema.safeParse({logoUrl:null}).success,true);
+ for(const v of ['https://example.com/logo.png','data:image/svg+xml;base64,PHN2Zz4=','data:image/png;base64,aGVsbG8='])assert.equal(logoValidation.businessLogoSchema.safeParse({logoUrl:v}).success,false);
+ assert.equal(logoValidation.businessLogoSchema.safeParse({logoUrl:tinyLogo,businessId:barber}).success,false);
+ const bytes=Buffer.from(tinyLogo.slice(22),'base64');bytes.writeUInt32BE(513,16);
+ assert.equal(logoValidation.validBusinessLogo('data:image/png;base64,'+bytes.toString('base64')),false);
+ assert.equal(logoValidation.validBusinessLogo('data:image/png;base64,'+Buffer.alloc(262145).toString('base64')),false);
+});
+test('business logo routes require owner and update only the authenticated business',async()=>{
+ const {Hono}=backendRequire('hono');let updated;
+ const roles=moduleFile('../Back-end/apps/src/middlewares/role.middleware.ts',backendRequire);
+ const response=moduleFile('../Back-end/apps/src/utils/response.ts',backendRequire);
+ const route=moduleFile('../Back-end/apps/src/modules/business/business.route.ts',p=>{
+  if(p==='../../config/database')return {prisma:{business:{update:async q=>{updated=q;return {id:q.where.id,name:'Business',logoUrl:q.data.logoUrl};}}}};
+  if(p.endsWith('business.validation'))return logoValidation;
+  if(p.endsWith('role.middleware'))return roles;
+  if(p.endsWith('origin.middleware'))return {trustedOrigin:async(c,next)=>next()};
+  if(p.endsWith('utils/response'))return response;
+  return backendRequire(p);
+ }).default;
+ const app=new Hono();app.use('*',async(c,next)=>{c.set('auth',{businessId:id,role:c.req.header('X-Test-Role')});await next();});app.route('/business',route);
+ const request=role=>app.request('/business/logo',{method:'PATCH',headers:{'Content-Type':'application/json','X-Test-Role':role},body:JSON.stringify({logoUrl:tinyLogo})});
+ assert.equal((await request('CASHIER')).status,403);assert.equal(updated,undefined);
+ assert.equal((await request('BARBER')).status,403);
+ assert.equal((await request('OWNER')).status,200);assert.equal(updated.where.id,id);assert.equal(updated.data.logoUrl,tinyLogo);
 });

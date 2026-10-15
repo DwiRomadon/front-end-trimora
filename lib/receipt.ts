@@ -1,5 +1,6 @@
 export type ReceiptData = {
   businessName: string;
+  businessLogoUrl?: string|null;
   outlet: { name: string; address: string|null; phone: string|null };
   invoiceNumber: string; status: string; date: string; cashier: string;
   customer?: { name: string; phone: string|null }|null;
