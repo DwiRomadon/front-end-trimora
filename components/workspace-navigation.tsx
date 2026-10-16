@@ -3,12 +3,15 @@ import { useState } from "react";
 
 export const navigationGroups = [
     { label: "Operasional", items: ["dashboard", "pos", "history", "customers", "shifts", "attendance"] },
-    { label: "Katalog & persediaan", items: ["services", "products", "inventory", "transfers", "counts"] },
-    { label: "Keuangan", items: ["reports", "cash", "expenses", "refunds", "commissions"] },
+    { label: "Katalog & persediaan", items: ["services", "products", "discounts", "inventory", "transfers", "counts"] },
+    { label: "Keuangan", items: ["reports", "cashbook", "handles", "cash", "expenses", "refunds", "commissions"] },
     { label: "Tim & pengaturan", items: ["business", "barbers", "cashiers", "outlets", "audit", "subscriptions"] },
 ];
 
 export const pageDescriptions: Record<string, string> = {
+    discounts: "Kelola diskon per layanan dan produk yang tersedia untuk kasir.",
+    cashbook: "Pantau pemasukan, pengeluaran, dan saldo catatan bisnis secara otomatis.",
+    handles: "Lihat jumlah kunjungan dan pelanggan yang ditangani setiap capster per bulan.",
     attendance: "Kelola jadwal kerja dan kehadiran tim. Absensi terpisah dari shift kasir dan saldo kas.",
     business: "Atur logo bisnis yang ditampilkan pada struk pelanggan.",
     subscriptions: "Pilih paket, periksa masa aktif, dan kelola pesanan langganan bisnis.",

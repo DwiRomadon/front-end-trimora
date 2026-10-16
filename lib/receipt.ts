@@ -5,14 +5,14 @@ export type ReceiptData = {
   invoiceNumber: string; status: string; date: string; cashier: string;
   customer?: { name: string; phone: string|null }|null;
   notes?: string|null;
-  items: { name: string; type: string; barber: string|null; quantity: string; price: string; subtotal?: string; discount: string; total: string }[];
+  items: { name: string; type: string; barber: string|null; quantity: string; price: string; subtotal?: string; discountName?: string|null; discount: string; total: string }[];
   subtotal: string; discountAmount: string; grandTotal: string;
   payments: { method: string; amount: string; tenderedAmount: string|null; changeAmount: string }[];
   totalTendered: string; totalChange: string; footer: string;
 };
 export const receiptNumber = (value: string) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(Number(value));
 export const receiptQuantity = (value: string) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 3 }).format(Number(value));
-export const paymentName = (method: string) => ({ CASH:"Tunai", QRIS:"QRIS", TRANSFER:"Transfer", DEBIT:"Kartu debit", EWALLET:"E-Wallet" }[method] ?? method);
+export const paymentName = (method: string) => ({ CASH:"Tunai", QRIS:"QRIS · GoPay", TRANSFER:"Transfer", DEBIT:"Kartu debit", EWALLET:"E-Wallet" }[method] ?? method);
 export function receiptDate(value: string) {
   const date = new Date(value);
   if(Number.isNaN(date.getTime())) return { date:"—", time:"—" };

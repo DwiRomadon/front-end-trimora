@@ -5,6 +5,8 @@ import Link from "next/link";
 import BusinessAvatar from "./business-avatar";
 import BusinessSettings from "./business-settings";
 import Reports from "./reports";
+import PosSettings from "./pos-settings";
+import BusinessReports from "./business-reports";
 import Attendance from "./attendance";
 import { periodQuery } from "@/lib/admin";
 import AdminDialog from "./admin-dialog";
@@ -188,7 +190,7 @@ export default function Workspace() {
         return <BrandLoading/>;
     if (!profile)
         return <Auth initialError={error} onLogin={p => { setProfile(p); setError(""); setView(p.role === "OWNER" ? "dashboard" : p.role === "BARBER" ? "attendance" : "pos"); }}/>;
-    const menus = profile.role === "BARBER" ? [["attendance", "◷", "Absensi saya"]] : [["attendance", "◷", "Absensi"],...(profile.role === "OWNER" ? [["dashboard", "◫", "Ringkasan"]] : []), ["pos", "▦", "Kasir"], ["history", "◷", "Transaksi"], ["outlets", "⌂", "Outlet"], ...(profile.role === "OWNER" ? [["business", "◇", "Profil bisnis"], ["services", "✂", "Layanan"], ["barbers", "♙", "Tim barber"], ["products", "▣", "Produk"], ["customers", "◎", "Pelanggan"], ["inventory", "▥", "Persediaan"], ["transfers", "⇄", "Transfer stok"], ["refunds", "↶", "Refund"], ["commissions", "♧", "Komisi capster"], ["expenses", "▧", "Pengeluaran"], ["reports", "▥", "Laporan"], ["cashiers", "♟", "Tim kasir"], ["shifts", "◴", "Pemantauan shift"], ["audit", "☷", "Audit aktivitas"], ["subscriptions", "◇", "Langganan"]] : []), ["counts", "▤", "Stock opname"], ["cash", "⇅", "Kas masuk/keluar"]];
+    const menus = profile.role === "BARBER" ? [["attendance", "◷", "Absensi saya"]] : [["attendance", "◷", "Absensi"],...(profile.role === "OWNER" ? [["dashboard", "◫", "Ringkasan"]] : []), ["pos", "▦", "Kasir"], ["history", "◷", "Transaksi"], ["outlets", "⌂", "Outlet"], ...(profile.role === "OWNER" ? [["business", "◇", "Profil bisnis"], ["services", "✂", "Layanan"], ["barbers", "♙", "Tim barber"], ["products", "▣", "Produk"], ["customers", "◎", "Pelanggan"], ["inventory", "▥", "Persediaan"], ["transfers", "⇄", "Transfer stok"], ["refunds", "↶", "Refund"], ["commissions", "♧", "Komisi produk"], ["discounts", "%", "Master diskon"], ["cashbook", "▤", "Buku kas"], ["handles", "◎", "Rekap pelanggan"], ["expenses", "▧", "Pengeluaran"], ["reports", "▥", "Laporan"], ["cashiers", "♟", "Tim kasir"], ["shifts", "◴", "Pemantauan shift"], ["audit", "☷", "Audit aktivitas"], ["subscriptions", "◇", "Langganan"]] : []), ["counts", "▤", "Stock opname"], ["cash", "⇅", "Kas masuk/keluar"]];
     const title = menus.find(m => m[0] === view)?.[2] ?? "Kasir";
     return <SubscriptionAccess key={profile.business.id} role={profile.role} onAllowed={setAccessGranted} onLogout={() => void logout()}><div className="workspace">
     <aside className="sidebar"><Link className="wordmark" href="/"><BrandLogo/></Link><div className="business-card"><BusinessAvatar name={profile.business.name} logoUrl={profile.business.logoUrl}/><div><strong>{profile.business.name}</strong><small>Barbershop workspace</small></div></div><WorkspaceNavigation menus={menus} view={view} busy={busy} onNavigate={id => navigate({ view: id })}/><div className="sidebar-bottom"><div className="user"><span className="avatar">{profile.user.name.slice(0, 1)}</span><div><strong>{profile.user.name}</strong><small>{profile.role === "OWNER" ? "Pemilik bisnis" : profile.role === "BARBER" ? "Barber" : "Kasir"}</small></div><button aria-label="Keluar" title="Keluar" onClick={() => navigate({ logout: true })} disabled={busy}>↪</button></div></div></aside>
@@ -208,6 +210,9 @@ export default function Workspace() {
     {profile.role !== "BARBER" && (view === "cash" || (view === "expenses" && profile.role === "OWNER")) && <Finance key={`${view}-${outletId}`} mode={view === "cash" ? "cash" : "expense"} role={profile.role} outletId={outletId} outlets={outlets} onDirtyChange={setPendingFinance} onBusyChange={setBusy}/>}
     {view === "subscriptions" && profile.role === "OWNER" && <Subscriptions onActivated={() => navigate({view:"dashboard"})}/>}
     {view === "business" && profile.role === "OWNER" && <BusinessSettings onDirtyChange={setPendingAdmin} onBusyChange={setBusy} onSaved={business=>setProfile(current=>current&&current.business.id===business.id?{...current,business:{...current.business,...business}}:current)}/> }
+    {view === "discounts" && profile.role === "OWNER" && <PosSettings mode="discounts" onDirtyChange={setPendingAdmin} onBusyChange={setBusy}/>}
+    {view === "cashbook" && profile.role === "OWNER" && <BusinessReports key="cash-book" mode="cash-book" outlets={outlets}/>}
+    {view === "handles" && profile.role === "OWNER" && <BusinessReports key="customer-handles" mode="customer-handles" outlets={outlets}/>}
     {view === "reports" && profile.role === "OWNER" && <Reports/>}
     {view === "cashiers" && profile.role === "OWNER" && <PeopleAdmin mode="cashiers" onDirtyChange={setPendingAdmin} onBusyChange={setBusy} onOutletsChanged={loadOutlets}/>}
     {view === "shifts" && profile.role === "OWNER" && <Shifts/>}

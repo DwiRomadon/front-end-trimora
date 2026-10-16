@@ -39,6 +39,7 @@
   "exclude": [
     "node_modules",
     ".next-ui-test",
-    ".next-attendance-build"
+    ".next-attendance-build",
+    ".next-revision-check"
   ]
 }

@@ -8,7 +8,7 @@
     "start": "next start --hostname 0.0.0.0 --port 7002",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/api.test.mjs tests/contracts.test.mjs"
+    "test": "node --test tests/api.test.mjs tests/contracts.test.mjs tests/pos-revisions.test.mjs"
   },
   "dependencies": {
     "@zxing/browser": "^0.1.5",
