@@ -143,6 +143,19 @@ test('platform service verifies superadmin before approval and attributes operat
 });
 
 const attendanceTools=moduleFile('lib/attendance.ts');
+const attendanceSetup=moduleFile('lib/attendance-setup.ts');
+test('attendance quick periods cover seven calendar days and entire leap months',()=>{
+ const week=attendanceSetup.attendancePeriod('week','2026-01-03');assert.equal(week.from,'2025-12-28');assert.equal(week.to,'2026-01-03');
+ const month=attendanceSetup.attendancePeriod('month','2028-02-20');assert.equal(month.from,'2028-02-01');assert.equal(month.to,'2028-02-29');
+ const december=attendanceSetup.attendancePeriod('month','2026-12-31');assert.equal(december.to,'2026-12-31');
+});
+test('simplified attendance form preserves overnight hours and clears template when editing manually',()=>{
+ const f=new FormData();for(const[k,v]of Object.entries({outletId:id,memberId:barber,workDate:'2026-10-16',startTime:'22:00',endTime:'06:00'}))f.set(k,v);
+ const created=attendanceSetup.attendanceSchedulePayload(f,false);assert.equal(attendanceSchedule.createScheduleSchema.safeParse(created).success,true);assert.equal(created.slot,1);assert.equal(created.lateToleranceMinutes,0);
+ const edited=attendanceSetup.attendanceSchedulePayload(f,true);assert.equal('memberId'in edited,false);assert.equal(edited.templateId,null);assert.equal(attendanceSchedule.updateScheduleSchema.safeParse(edited).success,true);
+ f.set('templateId',id);const preset=attendanceSetup.attendanceSchedulePayload(f,false);assert.equal('startTime'in preset,false);assert.equal('endTime'in preset,false);assert.equal(attendanceSchedule.createScheduleSchema.safeParse(preset).success,true);
+ f.delete('templateId');f.set('endTime','22:00');assert.throws(()=>attendanceSetup.attendanceSchedulePayload(f,false),/harus berbeda/);
+});
 const attendanceSchedule=moduleFile('../Back-end/apps/src/modules/attendance/attendance-schedule.validation.ts',backendRequire);
 const attendanceReport=moduleFile('../Back-end/apps/src/modules/attendance/attendance-report.validation.ts',backendRequire);
 test('attendance overnight windows use WIB independent of the device timezone',()=>{
